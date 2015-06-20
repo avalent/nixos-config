@@ -16,12 +16,19 @@
     enable = true;
     version = 2;
     device = "/dev/sda";
-    #extraEntries = ''
-    #  menuentry 'Ubuntu' {
-    #    insmod ext4
-    #    set root='(hd1,4)
-    #  }
-    #'';
+    extraEntries = ''
+      menuentry 'Ubuntu' {
+        insmod ext4
+        set root='(hd1,4)
+        chainloader +1
+      }
+      menuentry "Windows7" {
+        title Windows7
+        insmod ntfs
+        set root='(hd0,2)'
+        chainloader +1
+      }
+    '';
   };
 
   networking.hostName = "nixos"; # Define your hostname.
@@ -39,7 +46,6 @@
   # $ nix-env -qaP | grep wget
   environment.systemPackages = with pkgs; [
     git
-    stalonetray
     sudo
     vim
     wget
@@ -72,6 +78,8 @@
     windowManager.xmonad.extraPackages = self: [ self.xmonadContrib ];
     desktopManager.xterm.enable = false;
     desktopManager.default = "none";
+
+    # Login manager
     displayManager = {
       slim = {
         enable = true;
